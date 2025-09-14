@@ -1,0 +1,267 @@
+/* assets/css/styles.css */
+
+/* =============== БАЗА =============== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; color: #1b140e; font: 16px/1.55 "Georgia", "Times New Roman", serif; }
+
+/* ПАРЧМЕНТ-ФОН (для страниц без видео) */
+.bg-parchment {
+  background: #f2eee6 url('../img/parchment.jpg') center/cover fixed no-repeat;
+}
+
+/* КОНТЕЙНЕР */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+/* =============== ШАПКА =============== */
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(250, 245, 235, 0.8);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; min-height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand__logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.brand__title { color: #3a2618; font-weight: 700; letter-spacing: .3px; }
+
+
+/* === ДОПОЛНИТЕЛЬНО ДЛЯ ЛОГОТИПА С FALLBACK === */
+.brand__logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.brand__logo--fallback {
+  display: none; /* скрыт по умолчанию */
+  font-size: 24px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+
+
+/* навигация как список */
+.nav__list {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav__list li { margin: 0; padding: 0; }
+
+.nav__link {
+  color: #3a2618; text-decoration: none; padding: 8px 12px; border-radius: 10px;
+  transition: .2s ease-in-out background-color;
+}
+.nav__link:hover { background: rgba(0,0,0,.06); }
+.nav__link.is-active { background: rgba(58,38,24,.1); }
+.is-disabled { opacity: .55; cursor: not-allowed; pointer-events: none; }
+
+/* =============== ТЕКСТ / ТИТУЛЫ =============== */
+.page-title { margin: 24px 0 12px; font-size: 32px; line-height: 1.2; }
+.muted { color: #6f665e; }
+.center { text-align: center; }
+.mt-lg { margin-top: 24px; }
+
+/* Визуально скрытый текст */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* =============== ТУЛБАР / ПОИСК =============== */
+.toolbar { display:flex; justify-content:center; margin: 16px 0 24px; }
+.toolbar input[type="search"]{
+  width: min(560px, 100%); border: 1px solid rgba(0,0,0,.15);
+  background: #fff; padding: 10px 12px; border-radius: 12px; outline: none;
+}
+
+/* =============== СЕТКА И КАРТОЧКИ =============== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  min-height: 200px;
+}
+.card {
+  display:block; text-decoration:none; color:inherit;
+  background: #fff; border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px; padding: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,.10); }
+.card h3 { margin: 0 0 8px; font-size: 20px; }
+.card__actions { margin-top: 12px; }
+.btn {
+  display: inline-block; padding: 8px 12px; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.12); background: #faf8f5; color: #3a2618;
+  cursor: pointer;
+}
+
+/* =============== ПЛИТКИ ГЛАВНОЙ =============== */
+.tiles {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:16px; margin: 16px 0 32px;
+}
+.tile {
+  position: relative; display:block; min-height: 240px;
+  border-radius: 18px; overflow: hidden; text-decoration: none; color: #fff;
+  box-shadow: 0 2px 14px rgba(0,0,0,.12); border: 1px solid rgba(0,0,0,.08);
+  transition: transform .15s ease, box-shadow .15s ease, filter .2s;
+}
+.tile--image { background-size: cover; background-position: center; }
+.tile::before {
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.45));
+}
+
+/* Плитка "в разработке" — картинка целиком и светлее затемнение */
+.tile--wip {
+  background-image: url('../img/wip.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #d6cfc4;
+}
+.tile--wip::before {
+  background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.25));
+}
+
+/* Плитка "Расы" */
+.tile--races { background-image: url('../img/races-header.png'); }
+
+/* Текст/бейджи на плитках */
+.tile__title {
+  position:absolute; left:14px; bottom:16px; right:14px; z-index:1;
+  font-size: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,.5);
+}
+.tile__badge {
+  position:absolute; top:12px; left:12px; z-index:1;
+  background: #2f855a; color:#fff; padding:4px 8px; border-radius: 999px; font-size: 12px;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.tile__badge--wip { background:#b7791f; }
+.tile:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.2); }
+
+/* Плейсхолдеры не делаем прозрачными */
+.tile.is-disabled {
+  filter: grayscale(0.35);
+  opacity: 1;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* =============== ФУТЕР =============== */
+.site-footer { padding: 24px 0 40px; }
+.site-footer .container { border-top: 1px solid rgba(0,0,0,.06); padding-top: 16px; }
+
+/* =========================================================
+   ВИДЕО-ФОН (для страниц с классом body.has-video)
+   ========================================================= */
+.has-video.bg-parchment { background: none !important; } /* статичный фон мешает видео */
+
+.video-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw; height: 100vh;
+  z-index: 0;                 /* видео под контентом */
+  pointer-events: none;
+}
+.video-bg video {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+}
+.video-bg::after { /* вуаль для читаемости текста */
+  content:""; position:absolute; inset:0;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.22), rgba(0,0,0,.42));
+}
+
+/* контент поверх видео */
+.site-header, main, .site-footer { position: relative; z-index: 1; }
+
+/* Усиленные стили «поверх видео» */
+.has-video .video-bg::after { background: rgba(0,0,0,.38); }
+.has-video .site-header {
+  background: rgba(20,14,10,.55);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(6px);
+}
+.has-video .brand__title, .has-video .brand__logo {
+  color: #f7efe2; text-shadow: 0 1px 4px rgba(0,0,0,.45);
+}
+.has-video .nav__link { color: #f3ede4; }
+.has-video .nav__link:hover { background: rgba(255,255,255,.08); }
+.has-video .nav__link.is-active { background: rgba(255,255,255,.12); }
+.has-video .page-title {
+  color:#f8f5ef; text-shadow:0 2px 6px rgba(0,0,0,.6);
+  font-size: clamp(28px, 4vw, 40px); line-height:1.15;
+}
+.has-video .muted { color:#e5ddd3; opacity:.9; }
+.has-video .tile__title { text-shadow: 0 3px 10px rgba(0,0,0,.65); }
+
+/* =========================================================
+   КАРТОЧКИ РАС — КОМПАКТНЫЙ ВИД С ПРЕВЬЮ
+   ========================================================= */
+
+/* Цвет подложки вокруг изображения расы */
+:root { --race-thumb-bg: #d9d4cc; } /* тёплый серый под parchment */
+
+.card--race { padding: 12px; }
+
+.card--race .card__thumb{
+  height: 140px;                   /* фиксируем высоту превью */
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--race-thumb-bg);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+.card--race .card__thumb img{
+  width: 100%; height: 100%;
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;             /* картинка целиком, без обрезки */
+  display: block;
+}
+
+/* типографика/отступы поменьше */
+.card--race h3{ margin: 10px 0 6px; font-size: 18px; }
+.card--race .card__actions{ margin-top: 8px; }
+.card--race .btn{ padding: 6px 10px; font-size: 14px; }
+
+/* на широких — превью чуть выше */
+@media (min-width: 1200px){
+  .card--race .card__thumb{ height: 160px; }
+}
+
+/* Дополнительная «сила» селектора на случай кэша/переопределений */
+.grid .card.card--race .card__thumb{
+  background: var(--race-thumb-bg) !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+/* --- Серый фон под текстом в карточках рас --- */
+:root{
+  --card-bg: #e8e2d8;   /* фон для карточек рас */
+}
+.grid .card{
+  background: var(--card-bg) !important;
+}
+.grid .card .btn{
+  background: rgba(0,0,0,.04);
+  border-color: rgba(0,0,0,.10);
+}

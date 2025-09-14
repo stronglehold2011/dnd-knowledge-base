@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Расы — База знаний DnD</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Расы и происхождения DnD: описание, черты и справочник по расам для игроков и мастеров.">
+  <meta name="keywords" content="DnD, Dungeons and Dragons, расы, происхождения, база знаний, справочник, персонажи">
+  <meta name="author" content="Theon Greyjoy">
+
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-parchment has-video">
+
+  <!-- ВИДЕО-ФОН -->
+  <div class="video-bg" aria-hidden="true">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/img/parchment.jpg" aria-hidden="true">
+      <source src="assets/video/site-bg.mp4" type="video/mp4">
+      <source src="assets/video/site-bg.webm" type="video/webm">
+      <img src="assets/img/parchment.jpg" alt="">
+    </video>
+  </div>
+
+  <header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="assets/img/logo.png" alt="DnD" class="brand__logo"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='inline';">
+      <span class="brand__logo--fallback">⚔️</span>
+      <span class="brand__title">База знаний DnD</span>
+    </div>
+    <nav class="nav" aria-label="Главное меню">
+      <ul class="nav__list">
+        <li><a href="index.html" class="nav__link">Главная</a></li>
+        <li><a href="races.html" class="nav__link is-active">Расы</a></li>
+        <li><a href="#" class="nav__link is-disabled" role="button" aria-disabled="true" title="В разработке">Классы</a></li>
+        <li><a href="#" class="nav__link is-disabled" role="button" aria-disabled="true" title="В разработке">Заклинания</a></li>
+        <li><a href="#" class="nav__link is-disabled" role="button" aria-disabled="true" title="В разработке">Бестиарий</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+  <main class="container">
+    <h1 class="page-title">Расы и происхождения</h1>
+
+    <div class="toolbar">
+      <label for="search" class="visually-hidden">Поиск по расам</label>
+      <input id="search" type="search" placeholder="поиск по названиям и трейтам…">
+    </div>
+
+    <!-- сюда рендерятся карточки -->
+    <div id="racesGrid" class="grid"></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small class="muted">© Theon Greyjoy — внутренний справочник DnD</small>
+    </div>
+  </footer>
+
+  <!-- ВСТРОЕННЫЙ СКРИПТ -->
+  <script>
+(() => {
+  const grid = document.getElementById('racesGrid');
+  const search = document.getElementById('search');
+
+  // Страницы PDF для каждой расы
+  const PDF_PAGES = {
+    "Гномы": 3, "Люди": 4, "Дроу": 5, "Зверолюды": 6,
+    "Демоны": 10, "Эльфы": 11, "Хоббиты": 12, "Лотары": 13,
+    "Орки": 14, "Циклопы": 15, "Огры": 16, "Нордиры": 17,
+    "Ринка": 18, "Саури": 19, "Тролли": 20
+  };
+
+  // Название -> имя файла (без расширения)
+  const SLUGS = {
+    "Циклопы": "ciklops",
+    "Демоны": "demons",
+    "Дроу": "droy",
+    "Эльфы": "elfi",
+    "Гномы": "gnomi",
+    "Хоббиты": "hobits",
+    "Лотары": "lotars",
+    "Люди": "lydi",
+    "Нордиры": "nordirs",
+    "Огры": "ogrs",
+    "Орки": "orcs",
+    "Ринка": "rinka",
+    "Саури": "sayri",
+    "Тролли": "trolli",
+    "Зверолюды": "zverolydi"
+  };
+
+  // Фолбэк, если JSON недоступен
+  const FALLBACK = Object.keys(PDF_PAGES).map(name => ({ name, traits: [] }));
+  const CANDIDATES = [
+    'data/races.json','./data/races.json','/data/races.json',
+    'races.json','./races.json','/races.json'
+  ];
+
+  init();
+
+  async function init() {
+    const list = normalize(await tryLoad()) || FALLBACK;
+    render(list);
+    if (search) {
+      search.addEventListener('input', () => {
+        const q = search.value.trim().toLowerCase();
+        render(list.filter(it =>
+          it.name.toLowerCase().includes(q) ||
+          (it.traits || []).join(' ').toLowerCase().includes(q)
+        ));
+      });
+    }
+  }
+
+  async function tryLoad() {
+    for (const url of CANDIDATES) {
+      try {
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const arr = Array.isArray(data) ? data : (Array.isArray(data.races) ? data.races : []);
+        if (arr.length) return arr;
+      } catch {}
+    }
+    return FALLBACK;
+  }
+
+  function normalize(arr) {
+    return (arr || []).map(x => ({
+      name: (x.name || x.title || '').trim(),
+      traits: Array.isArray(x.traits) ? x.traits : []
+    })).filter(x => x.name);
+  }
+
+  function render(items) {
+    grid.innerHTML = '';
+    if (!items.length) {
+      grid.innerHTML = '<div class="muted">Ничего не найдено.</div>';
+      return;
+    }
+    for (const it of items) {
+      const page = PDF_PAGES[it.name];
+      const slug = SLUGS[it.name];
+
+      const a = document.createElement('a');
+      a.className = 'card card--race';
+      a.href = page ? `assets/pdf/races.pdf#page=${page}` : '#';
+      a.setAttribute('aria-label', `Раса: ${it.name}`);
+      if (page) { a.target = '_blank'; a.rel = 'noopener'; }
+
+      // мини-обложка (пытаемся webp, потом png)
+      const thumb = document.createElement('div');
+      thumb.className = 'card__thumb';
+      if (slug) {
+        const img = document.createElement('img');
+        img.alt = it.name;
+        img.loading = 'lazy';
+        img.src = `assets/img/races/${slug}.webp`;
+        img.onerror = () => {
+          img.src = `assets/img/races/${slug}.png`;
+        };
+        thumb.appendChild(img);
+      }
+      a.appendChild(thumb);
+
+      const h3 = document.createElement('h3');
+      h3.textContent = it.name;
+      a.appendChild(h3);
+
+      const actions = document.createElement('div');
+      actions.className = 'card__actions';
+      actions.innerHTML = page
+        ? '<span class="btn">Открыть в PDF</span>'
+        : '<span class="btn">Описание скоро</span>';
+      a.appendChild(actions);
+
+      grid.appendChild(a);
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
